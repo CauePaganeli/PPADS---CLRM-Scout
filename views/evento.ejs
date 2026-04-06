@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Evento</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Registrar Evento</h1>
+
+    <form action="/evento" method="POST">
+      <label for="partida">Partida</label>
+      <input id="partida" name="partida" required>
+
+      <label for="jogador">Jogador</label>
+      <input id="jogador" name="jogador" required>
+
+      <label for="tipoEvento">Tipo</label>
+      <select id="tipoEvento" name="tipoEvento" required>
+        <option>Gol</option>
+        <option>Assistência</option>
+        <option>Cartão Amarelo</option>
+        <option>Cartão Vermelho</option>
+      </select>
+
+      <label for="minuto">Minuto</label>
+      <input id="minuto" name="minuto" type="number" required>
+
+      <label for="observacao">Observação</label>
+      <textarea id="observacao" name="observacao"></textarea>
+
+      <button type="submit">Salvar</button>
+    </form>
+
+    <div class="actions">
+      <a class="voltar" href="/">Voltar</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Ranking de Gols</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Ranking de Gols</h1>
+
+    <table>
+      <tr>
+        <th>Jogador</th>
+        <th>Gols</th>
+      </tr>
+
+      <% ranking.forEach(r => { %>
+        <tr>
+          <td><%= r.jogador %></td>
+          <td><%= r.gols %></td>
+        </tr>
+      <% }) %>
+    </table>
+
+    <div class="actions">
+      <a class="voltar" href="/">Voltar</a>
+    </div>
+  </div>
+</body>
+</html>
