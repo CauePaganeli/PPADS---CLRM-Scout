@@ -1,9 +1,9 @@
 const express = require("express");
 const path = require("path");
-const sqlite3 = require("sqlite3").verbose();
+const Database = require("better-sqlite3");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -11,20 +11,18 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-const db = new sqlite3.Database("./database.db");
+const db = new Database("database.db");
 
-db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS eventos (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      partida TEXT,
-      jogador TEXT,
-      tipoEvento TEXT,
-      minuto INTEGER,
-      observacao TEXT
-    )
-  `);
-});
+db.exec(`
+  CREATE TABLE IF NOT EXISTS eventos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    partida TEXT NOT NULL,
+    jogador TEXT NOT NULL,
+    tipoEvento TEXT NOT NULL,
+    minuto INTEGER NOT NULL,
+    observacao TEXT
+  )
+`);
 
 app.get("/", (req, res) => {
   res.render("index");
@@ -35,39 +33,58 @@ app.get("/evento", (req, res) => {
 });
 
 app.post("/evento", (req, res) => {
-  const { partida, jogador, tipoEvento, minuto, observacao } = req.body;
+  try {
+    const { partida, jogador, tipoEvento, minuto, observacao } = req.body;
 
-  db.run(
-    `INSERT INTO eventos (partida, jogador, tipoEvento, minuto, observacao)
-     VALUES (?, ?, ?, ?, ?)`,
-    [partida, jogador, tipoEvento, minuto, observacao],
-    (err) => {
-      if (err) return res.send("Erro ao salvar");
-      res.redirect("/eventos");
-    }
-  );
+    const stmt = db.prepare(`
+      INSERT INTO eventos (partida, jogador, tipoEvento, minuto, observacao)
+      VALUES (?, ?, ?, ?, ?)
+    `);
+
+    stmt.run(
+      partida,
+      jogador,
+      tipoEvento,
+      Number(minuto),
+      observacao || ""
+    );
+
+    res.redirect("/eventos");
+  } catch (error) {
+    console.error("Erro ao salvar evento:", error);
+    res.status(500).send("Erro ao salvar evento.");
+  }
 });
 
 app.get("/eventos", (req, res) => {
-  db.all("SELECT * FROM eventos", [], (err, rows) => {
-    if (err) return res.send("Erro ao buscar eventos");
-    res.render("eventos", { eventos: rows });
-  });
+  try {
+    const stmt = db.prepare("SELECT * FROM eventos ORDER BY id DESC");
+    const eventos = stmt.all();
+
+    res.render("eventos", { eventos });
+  } catch (error) {
+    console.error("Erro ao buscar eventos:", error);
+    res.status(500).send("Erro ao buscar eventos.");
+  }
 });
 
 app.get("/ranking", (req, res) => {
-  db.all(
-    `SELECT jogador, COUNT(*) as gols
-     FROM eventos
-     WHERE tipoEvento = 'Gol'
-     GROUP BY jogador
-     ORDER BY gols DESC`,
-    [],
-    (err, rows) => {
-      if (err) return res.send("Erro ao buscar ranking");
-      res.render("ranking", { ranking: rows });
-    }
-  );
+  try {
+    const stmt = db.prepare(`
+      SELECT jogador, COUNT(*) AS gols
+      FROM eventos
+      WHERE tipoEvento = 'Gol'
+      GROUP BY jogador
+      ORDER BY gols DESC, jogador ASC
+    `);
+
+    const ranking = stmt.all();
+
+    res.render("ranking", { ranking });
+  } catch (error) {
+    console.error("Erro ao buscar ranking:", error);
+    res.status(500).send("Erro ao buscar ranking.");
+  }
 });
 
 app.listen(PORT, () => {
