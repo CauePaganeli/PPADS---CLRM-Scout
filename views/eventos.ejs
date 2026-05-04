@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Eventos Cadastrados</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Eventos Cadastrados</h1>
+
+    <% if (eventos.length === 0) { %>
+      <p>Nenhum evento cadastrado.</p>
+    <% } else { %>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Partida</th>
+          <th>Jogador</th>
+          <th>Tipo</th>
+          <th>Minuto</th>
+          <th>Observação</th>
+        </tr>
+        <% eventos.forEach(e => { %>
+          <tr>
+            <td><%= e.id %></td>
+            <td><%= e.partida %></td>
+            <td><%= e.jogador %></td>
+            <td><%= e.tipoEvento %></td>
+            <td><%= e.minuto %></td>
+            <td><%= e.observacao || "-" %></td>
+          </tr>
+        <% }) %>
+      </table>
+    <% } %>
+
+    <div class="actions">
+      <a class="voltar" href="/">Voltar</a>
+    </div>
+  </div>
+</body>
+</html>

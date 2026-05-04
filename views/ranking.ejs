@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Ranking</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Ranking</h1>
+
+    <form action="/ranking" method="GET">
+      <label for="tipo">Tipo de ranking</label>
+      <select id="tipo" name="tipo">
+        <option value="artilharia" <%= tipo === "artilharia" ? "selected" : "" %>>Artilharia</option>
+        <option value="assistencias" <%= tipo === "assistencias" ? "selected" : "" %>>Assistências</option>
+        <option value="disciplinar" <%= tipo === "disciplinar" ? "selected" : "" %>>Disciplinar</option>
+      </select>
+
+      <label for="campeonato">Campeonato</label>
+      <select id="campeonato" name="campeonato">
+        <option value="todos">Todos</option>
+        <% campeonatos.forEach(c => { %>
+          <option value="<%= c.id %>" <%= String(campeonatoSelecionado) === String(c.id) ? "selected" : "" %>>
+            <%= c.nome %>
+          </option>
+        <% }) %>
+      </select>
+
+      <label for="time">Time</label>
+      <select id="time" name="time">
+        <option value="todos">Todos</option>
+        <% times.forEach(t => { %>
+          <option value="<%= t.id %>" <%= String(timeSelecionado) === String(t.id) ? "selected" : "" %>>
+            <%= t.nome %>
+          </option>
+        <% }) %>
+      </select>
+
+      <button type="submit">Filtrar</button>
+    </form>
+
+    <% if (mensagem) { %>
+      <div class="erro"><%= mensagem %></div>
+    <% } %>
+
+    <% if (ranking.length > 0) { %>
+      <h2><%= titulo %></h2>
+      <table>
+  <tr>
+    <th>Jogador</th>
+    <th>Time</th>
+
+    <% if (tipo === "disciplinar") { %>
+      <th>Cartões Vermelhos</th>
+      <th>Cartões Amarelos</th>
+    <% } else { %>
+      <th>Total</th>
+    <% } %>
+  </tr>
+
+  <% ranking.forEach(item => { %>
+    <tr>
+      <td><%= item.jogador %></td>
+      <td><%= item.time %></td>
+
+      <% if (tipo === "disciplinar") { %>
+        <td><%= item.cartoesVermelhos || 0 %></td>
+        <td><%= item.cartoesAmarelos || 0 %></td>
+      <% } else { %>
+        <td><%= item.total %></td>
+      <% } %>
+    </tr>
+  <% }) %>
+</table>
+    <% } %>
+
+    <div class="actions">
+      <a class="voltar" href="/">Voltar</a>
+    </div>
+  </div>
+</body>
+</html>

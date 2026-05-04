@@ -1,0 +1,14 @@
+{
+  "name": "clrm-scout",
+  "version": "1.0.0",
+  "description": "Sistema de estatísticas de futebol - CLRM Scout",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2"
+  }
+}

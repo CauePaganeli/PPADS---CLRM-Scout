@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Estatísticas do Jogador</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Estatísticas do Jogador</h1>
+
+    <form action="/estatisticas-jogador" method="GET">
+      <label for="nome">Nome do jogador</label>
+      <input
+        id="nome"
+        name="nome"
+        type="text"
+        list="listaJogadores"
+        value="<%= filtros.nome %>"
+        placeholder="Ex.: Pedro Apim"
+        required
+      >
+
+      <datalist id="listaJogadores">
+        <% jogadores.forEach(j => { %>
+          <option value="<%= j.nome %>"></option>
+        <% }) %>
+      </datalist>
+
+      <label for="campeonato">Campeonato</label>
+      <select id="campeonato" name="campeonato">
+        <option value="todos">Todos</option>
+        <% campeonatos.forEach(c => { %>
+          <option value="<%= c.id %>" <%= String(filtros.campeonato) === String(c.id) ? "selected" : "" %>>
+            <%= c.nome %>
+          </option>
+        <% }) %>
+      </select>
+
+      <label for="time">Time</label>
+      <select id="time" name="time">
+        <option value="todos">Todos</option>
+        <% times.forEach(t => { %>
+          <option value="<%= t.id %>" <%= String(filtros.time) === String(t.id) ? "selected" : "" %>>
+            <%= t.nome %>
+          </option>
+        <% }) %>
+      </select>
+
+      <button type="submit">Consultar</button>
+    </form>
+
+    <% if (mensagem) { %>
+      <div class="erro"><%= mensagem %></div>
+    <% } %>
+
+    <% if (estatistica) { %>
+      <div class="card">
+        <h2>Dados do Jogador</h2>
+        <p><strong>Nome:</strong> <%= estatistica.jogador %></p>
+        <p><strong>Time:</strong> <%= estatistica.time %></p>
+      </div>
+
+      <div class="card">
+        <h2>Estatísticas</h2>
+        <p><strong>Partidas:</strong> <%= estatistica.partidas %></p>
+        <p><strong>Gols:</strong> <%= estatistica.gols %></p>
+        <p><strong>Assistências:</strong> <%= estatistica.assistencias %></p>
+        <p><strong>Cartões:</strong> <%= estatistica.cartoes %></p>
+      </div>
+
+      <% if (estatistica.porTime && estatistica.porTime.length > 1) { %>
+        <div class="card">
+          <h2>Estatísticas por Time</h2>
+
+          <table>
+            <tr>
+              <th>Time</th>
+              <th>Partidas</th>
+              <th>Gols</th>
+              <th>Assistências</th>
+              <th>Cartões</th>
+            </tr>
+
+            <% estatistica.porTime.forEach(item => { %>
+              <tr>
+                <td><%= item.time %></td>
+                <td><%= item.partidas || 0 %></td>
+                <td><%= item.gols || 0 %></td>
+                <td><%= item.assistencias || 0 %></td>
+                <td><%= item.cartoes || 0 %></td>
+              </tr>
+            <% }) %>
+          </table>
+        </div>
+      <% } %>
+
+      <div class="card">
+        <h2>Histórico de Partidas</h2>
+        <% if (estatistica.historico.length === 0) { %>
+          <p>Jogador sem movimentação registrada.</p>
+        <% } else { %>
+          <ul>
+            <% estatistica.historico.forEach(item => { %>
+              <li><%= item.descricao %></li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </div>
+    <% } %>
+
+    <div class="actions">
+      <a class="voltar" href="/">Voltar</a>
+    </div>
+  </div>
+</body>
+</html>

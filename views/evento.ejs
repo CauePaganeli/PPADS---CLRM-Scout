@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Evento</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Registrar Evento</h1>
+
+    <% if (erro) { %>
+      <div class="erro"><%= erro %></div>
+    <% } %>
+
+    <% if (confirmacaoTransferencia) { %>
+  <div class="erro">
+    O jogador <strong><%= confirmacaoTransferencia.jogador %></strong> já está cadastrado no time
+    <strong><%= confirmacaoTransferencia.timeAtual %></strong>.
+    Deseja alterar o cadastro para <strong><%= confirmacaoTransferencia.novoTime %></strong>?
+  </div>
+
+  <form action="/evento" method="POST">
+    <input type="hidden" name="campeonato" value="<%= dadosFormulario.campeonato %>">
+    <input type="hidden" name="mandante" value="<%= dadosFormulario.mandante %>">
+    <input type="hidden" name="visitante" value="<%= dadosFormulario.visitante %>">
+    <input type="hidden" name="timeJogador" value="<%= dadosFormulario.timeJogador %>">
+    <input type="hidden" name="jogador" value="<%= dadosFormulario.jogador %>">
+    <input type="hidden" name="tipoEvento" value="<%= dadosFormulario.tipoEvento %>">
+    <input type="hidden" name="minuto" value="<%= dadosFormulario.minuto %>">
+    <input type="hidden" name="observacao" value="<%= dadosFormulario.observacao %>">
+    <input type="hidden" name="confirmarTransferencia" value="sim">
+
+    <button type="submit">Sim, alterar time e salvar evento</button>
+    <a class="voltar" href="/evento">Cancelar</a>
+  </form>
+<% } %>
+
+    <form action="/evento" method="POST">
+      <label for="campeonato">Campeonato</label>
+      <input id="campeonato" name="campeonato" list="listaCampeonatos" placeholder="Ex.: Brasileirão" required value="<%= dadosFormulario.campeonato || '' %>">
+      <datalist id="listaCampeonatos">
+        <% campeonatos.forEach(c => { %>
+          <option value="<%= c.nome %>"></option>
+        <% }) %>
+      </datalist>
+
+      <label>Partida</label>
+      <div class="partida-grid">
+        <input id="mandante" name="mandante" list="listaTimes" placeholder="Mandante" required value="<%= dadosFormulario.mandante || '' %>">
+        <span class="partida-x">X</span>
+        <input id="visitante" name="visitante" list="listaTimes" placeholder="Visitante" required value="<%= dadosFormulario.visitante || '' %>">
+      </div>
+
+      <datalist id="listaTimes">
+        <% times.forEach(t => { %>
+          <option value="<%= t.nome %>"></option>
+        <% }) %>
+      </datalist>
+
+      <label for="timeJogador">Time do jogador</label>
+      <input id="timeJogador" name="timeJogador" list="listaTimes" placeholder="Ex.: Corinthians Cabeçuda" required value="<%= dadosFormulario.timeJogador || '' %>">
+
+      <label for="jogador">Jogador</label>
+      <input id="jogador" name="jogador" list="listaJogadores" placeholder="Ex.: Pedro Aipim" required value="<%= dadosFormulario.jogador || '' %>">
+      <datalist id="listaJogadores">
+        <% jogadores.forEach(j => { %>
+          <option value="<%= j.nome %>"></option>
+        <% }) %>
+      </datalist>
+
+      <label for="tipoEvento">Tipo de evento</label>
+      <select id="tipoEvento" name="tipoEvento" required>
+        <option value="">Selecione</option>
+        <option value="Gol">Gol</option>
+        <option value="Assistência">Assistência</option>
+        <option value="Cartão Amarelo">Cartão Amarelo</option>
+        <option value="Cartão Vermelho">Cartão Vermelho</option>
+      </select>
+
+      <label for="minuto">Minuto</label>
+      <input id="minuto" name="minuto" type="number" min="1" max="140" required placeholder="Ex: 63" value="<%= dadosFormulario.minuto || '' %>">
+
+      <label for="observacao">Observação</label>
+      <textarea id="observacao" placeholder="Ex.: Gol de Pênalti" name="observacao"><%= dadosFormulario.observacao || '' %></textarea>
+
+      <button type="submit">Salvar</button>
+    </form>
+
+    <div class="actions">
+      <a class="voltar" href="/">Voltar</a>
+    </div>
+  </div>
+</body>
+</html>

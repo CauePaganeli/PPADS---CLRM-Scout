@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>CLRM Scout</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>CLRM Scout</h1>
+    <p>Sistema de análise e estatísticas de partidas de futebol.</p>
+
+    <div class="menu">
+      <a href="/evento">Registrar Evento</a>
+      <a href="/eventos">Ver Eventos</a>
+      <a href="/ranking">Ver Ranking</a>
+      <a href="/estatisticas-jogador">Estatísticas do Jogador</a>
+    </div>
+
+    <h2>Partidas Recentes</h2>
+    <% if (partidasRecentes.length === 0) { %>
+      <p>Nenhuma partida cadastrada.</p>
+    <% } else { %>
+      <ul>
+        <% partidasRecentes.forEach(partida => { %>
+          <li><%= partida.descricao %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+    <h2>Ranking de Artilharia</h2>
+    <% if (rankingArtilharia.length === 0) { %>
+      <p>Sem gols registrados.</p>
+    <% } else { %>
+      <table>
+        <tr>
+          <th>Jogador</th>
+          <th>Gols</th>
+        </tr>
+        <% rankingArtilharia.forEach(item => { %>
+          <tr>
+            <td><%= item.jogador %></td>
+            <td><%= item.gols %></td>
+          </tr>
+        <% }) %>
+      </table>
+    <% } %>
+  </div>
+</body>
+</html>
